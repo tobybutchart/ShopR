@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="version" content="1.0.0">
+		<title>ShopR</title>
+		<meta name="author" content="Toby Butchart">
+		<meta name="description" content="Create, view, and send shopping lists">
+		<meta name="subject" content="ShopR">
+		<meta name="application-name" content="ShopR">
+		<meta name="theme-color" content="#3d6d79">
+		<meta name="msapplication-TileColor" content="#3d6d79">
+		<meta property="og:url" content="">
+		<meta property="og:locale" content="en">
+		<meta property="og:type" content="website">
+		<meta property="og:title" content="ShopR">
+		<meta property="og:image" content="img/icons/android-chrome-512x512.png">
+		<meta property="og:image:alt" content="ShopR">
+		<meta property="og:description" content="Create, view, and send shopping lists">
+		<meta property="og:site_name" content="ShopR">
+		<meta property="article:author" content="Toby Butchart">
+		<meta name="twitter:url" content="">
+		<meta name="twitter:title" content="ShopR">
+		<meta name="twitter:card" content="summary">
+		<meta name="twitter:description" content="Create, view, and send shopping lists">
+		<meta name="twitter:image" content="/img/icons/android-chrome-512x512.png">
+		<meta name="twitter:image:alt" content="ShopR">
+		<link rel="manifest" href="manifest.webmanifest" />
+		<link rel="apple-touch-icon-precomposed" href="img/icons/favicon-32x32.png">
+		<link rel="apple-touch-icon" sizes="180x180" href="img/icons/apple-touch-icon.png">
+		<link rel="icon" type="image/png" href="img/icons/favicon-16x16.png" sizes="16x16">
+		<link rel="icon" type="image/png" href="img/icons/favicon-32x32.png" sizes="32x32">
+		<link rel="icon" type="image/png" href="img/icons/apple-touch-icon.png" sizes="180x180">
+		<link rel="icon" type="image/png" href="img/icons/android-chrome-192x192.png" sizes="192x192">
+		<link rel="icon" type="image/png" href="img/icons/android-chrome-512x512.png" sizes="512x512">
+		<link rel="shortcut icon" href="img/icons/favicon-32x32.png">
+		<link rel="icon" type="image/png" href="img/icons/favicon-32x32.png">
+		<!--[if IE]><link rel="SHORTCUT ICON" href="img/icons/favicon.ico"/><![endif]-->
+		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Quicksand">
+		<link rel="stylesheet" href="css/style.min.css?v=1.0.0">
+		<link rel="stylesheet" href="msg/css/msg.min.css?v=1.0.0">
+	</head>
+	<body onbeforeunload="return checkLeave()">
+		<!-- modal start -->
+		<div id="settings-modal" class="modal">
+			<div class="modal-content">
+				<div class="modal-header bg-clr-dark font-branded font-clr-light">
+					<span id="btn-close-modal" class="close" onclick="hideModal('settings-modal')">&times;</span>
+					<img src="img/ShopR-sm-white.png" alt="ShopR" class="padding-t-md">
+				</div>
+				<div class="modal-body">
+					<!-- show message tests -->
+					<!-- <button id="btn-test-msg-success" onclick="showMsg('success', 'Test success')"><i class="material-icons">check_circle</i></button>
+					<button id="btn-test-msg-info" onclick="showMsg('info', 'Test info')"><i class="material-icons">info</i></button>
+					<button id="btn-test-msg-warning" onclick="showMsg('warning', 'Test warning')"><i class="material-icons">warning</i></button>
+					<button id="btn-test-msg-error" onclick="showMsg('error', 'Test error')"><i class="material-icons">error</i></button>
+					<button id="btn-test-msg-confirm" onclick="showMsg('confirm', 'Test confirm', testConfirm, testDecline)"><i class="material-icons">help</i></button>
+					<button id="btn-test-msg-input" onclick="showMsg('input', 'Test input', testInput, testInputCancel, 'text to edit')"><i class="material-icons">input</i></button> -->
+					<table class="tbl-settings">
+						<tr>
+							<td colspan="2"><h4>Settings</h4></td>
+						</tr>
+						<tr>
+							<td><label for="lbl-settings-close-modal">Close modal on background click</label></td>
+							<td><input type="checkbox" id="lbl-settings-close-modal" data-settings="true" data-setting="allowModalBGClick"></td>
+						</tr>
+						<tr>
+							<td><label for="lbl-settings-hide-on-tick">Hide list item on tick</label></td>
+							<td><input type="checkbox" id="lbl-settings-hide-on-tick" data-settings="true" data-setting="hideOnTick"></td>
+						</tr>
+						<tr>
+							<td><label for="lbl-settings-show-navigate">Show warning on navigate away</label></td>
+							<td><input type="checkbox" id="lbl-settings-show-navigate" data-settings="true" data-setting="checkNavAway"></td>
+						</tr>
+						<tr>
+							<td><label for="lbl-settings-confirm-delete">Confirm on delete</label></td>
+							<td><input type="checkbox" id="lbl-settings-confirm-delete" data-settings="true" data-setting="confirmOnDelete"></td>
+						</tr>
+						<tr class="border-top">
+							<td colspan="2"><h4>Peer connection</h4></td>
+						</tr>
+						<tr>
+							<td><p id="lbl-peer-id">---</p></td>
+							<td>
+								<button id="btn-generate-peer-id" onclick="toggleReceiver()"><i class="material-icons">power_settings_new</i></button>
+								<button id="btn-share-peer-id"><i class="material-icons">share</i></button>
+							</td>
+						</tr>
+						<tr class="border-top">
+							<td colspan="2"><h4>About</h4></td>
+						</tr>
+						<tr>
+							<td colspan="2"><p>Version&nbsp;<span id="about-version"></span></p></td>
+						</tr>
+						<tr>
+							<td colspan="2"><p>&copy;&nbsp;<span id="about-year"></span></p></td>
+						</tr>
+					</table>
+				</div>
+				<div class="modal-footer bg-clr-med font-branded">
+					<button id="btn-modal-action" class="button-themed" data-id=0 onclick="saveSettingsAndClose()">Save&nbsp;<i class="material-icons">save</i></button>
+				</div>
+			</div>
+		</div>
+		<!-- modal end -->
+
+		<!-- modal send list start -->
+		<div id="send-modal" class="modal">
+			<div class="modal-content">
+				<div class="modal-header bg-clr-dark font-branded font-clr-light">
+					<span id="btn-close-modal" class="close" onclick="hideModal('send-modal')">&times;</span>
+					<img src="img/ShopR-sm-white.png" alt="ShopR" class="padding-t-md">
+				</div>
+				<div class="modal-body">
+					<table class="tbl-settings">
+						<tr>
+							<td><h4><label for="lbl-send-id">ID</label></h4></td>
+						</tr>
+						<tr>
+							<td><input type="text" id="lbl-send-id" autocomplete="off"></td>
+						</tr>
+						<tr>
+							<td><h4><label for="lbl-send-message">Message (optional)</label></h4></td>
+						</tr>
+						<tr>
+							<td><textarea id="lbl-send-message" rows="12" cols="50" autocomplete="off"></textarea></td>
+						</tr>
+					</table>
+				</div>
+				<div class="modal-footer bg-clr-med font-branded">
+					<button id="btn-modal-connect" class="button-themed" data-id=0 onclick="initSender()">Connect&nbsp;<i class="material-icons">power_settings_new</i></button>
+					<button id="btn-modal-send" class="button-themed" data-id=0 onclick="sendList()" style="display: none;">Send&nbsp;<i class="material-icons">send</i></button>
+				</div>
+			</div>
+		</div>
+		<!-- modal send list end -->
+
+		<!-- side nav start -->
+		<div id="side-nav" class="sidenav bg-clr-dark font-clr-light">
+			<span id="btn-close-nav" class="close font-branded btn-nav-close font-clr-light" onclick="closeNav()">&times;</span>
+			<div id="side-nav-container">
+				<img src="img/ShopR-lg-white.png" class="img-responsive csr-pointer" id="img-nav-header" alt="ShopR" onclick="showPage(event, 'Home', navigateHome)">
+				<hr class="line-light">
+				<!-- <div class="tab"> -->
+					<button id="btn-tab-add" class="tablinks button-themed active" onclick="showPage(event, 'Add', navigateOther)">Add</button>
+					<br>
+					<button id="btn-tab-open" class="tablinks button-themed" onclick="showPage(event, 'Open', navigateOther)">Open</button>
+					<span id="btn-settings" class="csr-pointer"><i class="material-icons font-clr-light hamburger" onclick="showModal('settings-modal')">settings</i></span>
+				<!-- </div> -->
+			</div>
+		</div>
+		<!-- side nav end -->
+
+		<!-- main header start -->
+		<!-- do not refactor this inline style -->
+		<div class="header" id="main-header" style="display: none;">
+			<img src="img/ShopR-sm-white.png" id="img-header-logo" class="img-responsive csr-pointer" alt="ShopR" onclick="showPage(event, 'Home', navigateHome)">
+			<span class="csr-pointer float-right" onclick="openNav()"><i class="material-icons hamburger">menu</i></span>
+		</div>
+		<!-- main header start -->
+
+		<!-- main content start -->
+		<!-- do not refactor this inline style -->
+		<div id="Home" class="tab-content" style="display: block;">
+			<span class="csr-pointer float-right" onclick="openNav()"><i class="material-icons hamburger">menu</i></span>
+			<div id="home-main-container">
+                <img id="img-home-logo" src="img/ShopR-lg-black-ds.png" alt="ShopR" class="img-responsive">
+				<br>
+                <button class="button-themed" onclick="showPage(event, 'Add', navigateOther)">Create shopping list&nbsp;<i class="material-icons">create</i></button>
+            </div>
+		</div>
+		<div id="Add" class="tab-content">
+			<div class="main-content">
+				<button id="btn-accordion-add-add" class="accordion button-themed">Info</button>
+				<div class="panel">
+					<input type="hidden" id="inp-list-uuid">
+					<table>
+						<tr>
+							<td><label for="inp-list-title">Title</label></td>
+							<td><input type="text" id="inp-list-title" name="ListTitle" required></td>
+						</tr>
+						<tr>
+							<td><label for="inp-list-shop">Shop</label></td>
+							<td><input type="text" id="inp-list-shop" name="ListShop" required></td>
+						</tr>
+					</table>
+				</div>
+				<button class="accordion button-themed">Menu</button>
+				<div class="panel">
+					<table>
+						<tr>
+							<td><label for="inp-mon">Mon</label></td>
+							<td><input type="text" id="inp-mon" name="Monday" required></td>
+						</tr>
+						<tr>
+							<td><label for="inp-tue">Tue</label></td>
+							<td><input type="text" id="inp-tue" name="Tuesday" required></td>
+						</tr>
+						<tr>
+							<td><label for="inp-mon">Wed</label></td>
+							<td><input type="text" id="inp-wed" name="Wednesday" required></td>
+						</tr>
+						<tr>
+							<td><label for="inp-thu">Thu</label></td>
+							<td><input type="text" id="inp-thu" name="Thursday" required></td>
+						</tr>
+						<tr>
+							<td><label for="inp-fri">Fri</label></td>
+							<td><input type="text" id="inp-fri" name="Friday" required></td>
+						</tr>
+						<tr>
+							<td><label for="inp-sat">Sat</label></td>
+							<td><input type="text" id="inp-sat" name="Saturday" required></td>
+						</tr>
+						<tr>
+							<td><label for="inp-sun">Sun</label></td>
+							<td><input type="text" id="inp-sun" name="Sunday" required></td>
+						</tr>
+					</table>
+				</div>
+				<button id="btn-accordion-add-add" class="accordion button-themed">Add</button>
+				<div class="panel">
+					<table>
+						<tr>
+							<td><label for="inp-list-item">Item</label></td>
+							<td>
+								<div class="buttoned-input-container">
+									<input type="text" id="inp-list-item" name="ListItem" class="buttoned-input-input" required>
+									<button class="buttoned-input-button" onclick="addListItem(true)"><i class="material-icons buttoned-input-icon">add</i></button>
+								</div>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<button id="btn-accordion-add-list" class="accordion button-themed">List</button>
+				<div class="panel">
+					<table id="table-list-items">
+						<tbody id="table-list-items-body" class="tbl-alt-rows">
+							<!-- content created programmatically -->
+						</tbody>
+					</table>
+				</div>
+				<div class="wdth-100 centre-align">
+					<button class="button-themed" onclick="saveList()">Save&nbsp;<i class="material-icons">save</i></button>
+				</div>
+			</div>
+		</div>
+		<div id="Open" class="tab-content">
+			<div class="main-content">
+				<table>
+					<tbody id="table-lists-open">
+						<!-- content created programmatically -->
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div id="View" class="tab-content">
+			<div class="main-content">
+				<button id="btn-accordion-add-add" class="accordion button-themed">Info</button>
+				<div class="panel">
+					<table>
+						<tbody id="table-list-info-view">
+							<tr>
+								<td><p>Title</p></td>
+								<td><p>Weekly Shop</p></td>
+							</tr>
+							<tr>
+								<td><p>Shop</p></td>
+								<td><p>Lidl</p></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<button class="accordion button-themed">Menu</button>
+				<div class="panel">
+					<table>
+						<tbody id="table-list-menu-view">
+							<!-- content created programmatically -->
+						</tbody>
+					</table>
+				</div>
+				<button id="btn-accordion-view-list" class="accordion button-themed">List</button>
+				<div class="panel">
+					<table>
+						<tbody id="table-list-items-view" class="tbl-alt-rows">
+							<!-- content created programmatically -->
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<!-- main content emd -->
+
+		<!-- main footer start -->
+		<div class="main-footer bg-clr-med">
+			<div class="main-footer-container">
+				<span class="font-clr-med">Created by <a href="https://tobybutchart.github.io/" target="_blank">Toby Butchart</a></span>
+			</div>
+		</div>
+		<!-- main footer end -->
+
+		<script type="text/javascript" src="js/text-utils.min.js?v=1.0.0"></script>
+		<script type="text/javascript" src="js/uuid.min.js?v=1.0.0"></script>
+		<script type="text/javascript" src="msg/js/msg.js?v=1.0.0"></script>
+		<script type="text/javascript" src="js/meta.min.js?v=1.0.0"></script>
+		<script type="text/javascript" src="js/settings.js?v=1.0.0"></script>
+		<script type="text/javascript" src="js/nav-bar.min.js?v=1.0.0"></script>
+		<script type="text/javascript" src="js/page-control.min.js?v=1.0.0"></script>
+		<script type="text/javascript" src="js/modal.min.js?v=1.0.0"></script>
+		<script type="text/javascript" src="js/accordion.min.js?v=1.0.0"></script>
+		<script type="text/javascript" src="js/peer.min.js?v=1.0.0"></script>
+		<script type="text/javascript" src="js/shopr.js?v=1.0.0"></script>
+		<script type="text/javascript" src="js/share.js?v=1.0.0"></script>
+		<script type="text/javascript">
+			function navigateHome() {
+				document.getElementById('main-header').style.display = 'none';
+				closeNav();
+			}
+
+			function navigateOther() {
+				document.getElementById('main-header').style.display = 'block';
+				closeNav();
+			}
+
+			function testConfirm(elem) {
+				alert('confirm');
+			}
+
+			function testDecline(elem) {
+				alert('cancel');
+			}
+
+			function testInput(elem, s) {
+				alert('input confirm: ' + s);
+			}
+
+			function testInputCancel(elem) {
+				alert('input cancel');
+			}
+
+			function checkLeave() {
+				if (settings.checkNavAway) {
+					return "Are you sure you want to leave?";
+				}
+			}
+
+			function saveSettingsAndClose() {
+				screenToSettings();
+				hideModal('settings-modal');
+			}
+
+			/* global styles for msg box */
+			MSG_HEADER_FONT =  "'Quicksand', serif";
+			MSG_CONTENT_FONT = "'Quicksand', serif";
+
+			/* display page info */
+			document.getElementById('about-version').innerHTML = getMeta('version');
+			document.getElementById('about-year').innerHTML = new Date().getFullYear();
+
+			if ('serviceWorker' in navigator) {
+			    navigator.serviceWorker
+			    .register('/js/serviceworker.js')
+			    .then(() => { console.log('Service Worker Registered'); });
+			}
+		</script>
+	</body>
+</html>
