@@ -36,12 +36,8 @@ self.addEventListener('install', (e) => {
             '/js/text-utils.min.js',
             '/js/uuid.js',
             '/js/uuid.min.js',
-            '/msg/css/msg.css',
-            '/msg/css/msg.min.css',
-            '/msg/js/chrome-ext.js',
-            '/msg/js/chrome-ext.min.js',
-            '/msg/js/msg.js',
-            '/msg/js/msg.min.js',
+            '/msg/src/msg.js',
+            '/msg/src/msg.min.js',
             '/peerjs.min.js.map'
         ]))
     );

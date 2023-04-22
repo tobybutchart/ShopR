@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<meta name="version" content="1.0.0">
+		<meta name="version" content="1.0.1">
 		<title>ShopR</title>
 		<meta name="author" content="Toby Butchart">
 		<meta name="description" content="Create, view, and send shopping lists">
@@ -26,7 +26,7 @@
 		<meta name="twitter:description" content="Create, view, and send shopping lists">
 		<meta name="twitter:image" content="/img/icons/android-chrome-512x512.png">
 		<meta name="twitter:image:alt" content="ShopR">
-		<link rel="manifest" href="manifest.webmanifest" />
+		<link rel="manifest" href="manifest.json" />
 		<link rel="apple-touch-icon-precomposed" href="img/icons/favicon-32x32.png">
 		<link rel="apple-touch-icon" sizes="180x180" href="img/icons/apple-touch-icon.png">
 		<link rel="icon" type="image/png" href="img/icons/favicon-16x16.png" sizes="16x16">
@@ -40,7 +40,6 @@
 		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Quicksand">
 		<link rel="stylesheet" href="css/style.min.css?v=1.0.0">
-		<link rel="stylesheet" href="msg/css/msg.min.css?v=1.0.0">
 	</head>
 	<body onbeforeunload="return checkLeave()">
 		<!-- modal start -->
@@ -262,14 +261,7 @@
 				<div class="panel">
 					<table>
 						<tbody id="table-list-info-view">
-							<tr>
-								<td><p>Title</p></td>
-								<td><p>Weekly Shop</p></td>
-							</tr>
-							<tr>
-								<td><p>Shop</p></td>
-								<td><p>Lidl</p></td>
-							</tr>
+							<!-- content created programmatically -->
 						</tbody>
 					</table>
 				</div>
@@ -289,6 +281,8 @@
 						</tbody>
 					</table>
 				</div>
+				<p>Total Items:&nbsp;<span id="span-total-items">0</span></p>
+				<p>Items Remaining:&nbsp;<span id="span-items-remaining">0</span></p>
 			</div>
 		</div>
 		<!-- main content emd -->
@@ -303,7 +297,7 @@
 
 		<script type="text/javascript" src="js/text-utils.min.js?v=1.0.0"></script>
 		<script type="text/javascript" src="js/uuid.min.js?v=1.0.0"></script>
-		<script type="text/javascript" src="msg/js/msg.js?v=1.0.0"></script>
+		<script type="text/javascript" src="msg/src/msg.js?v=1.0.0"></script>
 		<script type="text/javascript" src="js/meta.min.js?v=1.0.0"></script>
 		<script type="text/javascript" src="js/settings.js?v=1.0.0"></script>
 		<script type="text/javascript" src="js/nav-bar.min.js?v=1.0.0"></script>
@@ -355,14 +349,21 @@
 			MSG_HEADER_FONT =  "'Quicksand', serif";
 			MSG_CONTENT_FONT = "'Quicksand', serif";
 
+			MSG_SUCCESS_COLOUR = "#3D6D79";
+			MSG_INFO_COLOUR = "#3D4F79";
+			MSG_WARNING_COLOUR = "#79493D";
+			MSG_ERROR_COLOUR = "#793D6D";
+			MSG_CONFIRM_COLOUR = "#3D6D79";
+			MSG_INPUT_COLOUR = "#3D6D79";
+
 			/* display page info */
 			document.getElementById('about-version').innerHTML = getMeta('version');
 			document.getElementById('about-year').innerHTML = new Date().getFullYear();
 
 			if ('serviceWorker' in navigator) {
 			    navigator.serviceWorker
-			    .register('/js/serviceworker.js')
-			    .then(() => { console.log('Service Worker Registered'); });
+				    .register('/js/service-worker.js')
+				    .then(() => { console.log('Service Worker Registered'); });
 			}
 		</script>
 	</body>

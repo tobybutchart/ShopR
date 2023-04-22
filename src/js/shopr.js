@@ -240,15 +240,25 @@ function confirmEditItemNode(id) {
     showMsg('input', 'Edit list item', editItemNode, null, p.innerHTML, p);
 }
 
-function addListItem(openAccordion, item) {
+function isItemInTable(item) {
+    let table = document.getElementById("table-list-items");
+
+    for (let row of table.rows) {
+        for(let cell of row.cells) {
+            for(let child of cell.children) {
+                if (child.nodeName.toLowerCase() == "p" && child.innerHTML.toLowerCase() == item.toLowerCase()) {
+                    return true;
+                }
+            }
+        }
+    }
+
+    return false;
+}
+
+function addListItemInternal(openAccordion, item) {
     let tbody = document.getElementById("table-list-items-body");
     let _item = document.getElementById("inp-list-item");
-
-    if (!_item.value) {
-        showMsg('warning', 'Enter an item!');
-        _item.focus();
-        return false;
-    }
 
     let tr = document.createElement("tr");
     let td1 = document.createElement("td");
@@ -309,6 +319,30 @@ function addListItem(openAccordion, item) {
     return true;
 }
 
+function addListItem(openAccordion, item) {
+    let _item = document.getElementById("inp-list-item");
+
+    if (!_item.value) {
+        showMsg('warning', 'Enter an item!');
+        _item.focus();
+        return false;
+    }
+
+    //check for dups, but only if not added through updater (i.e., item is set)
+    if (!item && isItemInTable(_item.value)) {
+        let fnOK = function () {
+            addListItemInternal(openAccordion, item);
+        }
+        let fnCancel = function () {
+            _item.value = "";
+            _item.focus();
+        }
+        showMsg('confirm', _item.value + ' has already been added. Are you sure you want to add it again?', fnOK, fnCancel);
+    } else {
+        addListItemInternal(openAccordion, item);
+    }
+}
+
 function toggleListItem(sender, uuid) {
     let ctrl = document.getElementById(uuid);
 
@@ -320,6 +354,7 @@ function toggleListItem(sender, uuid) {
             ctrl.style.textDecoration = "line-through";
             if (settings.hideOnTick) {
                 tr.style.display = "none";
+                tr.remove();
             }
         } else {
             ctrl.style.textDecoration = "none";
@@ -328,14 +363,27 @@ function toggleListItem(sender, uuid) {
             }
         }
 
+        let thisList;
+
         for (let shoppingList of shoppingLists) {
             for (let item of shoppingList.items) {
                 if (item.uuid == uuid) {
+                    thisList = shoppingList;
                     item.checked = sender.checked;
                     break;
                 }
             }
         }
+
+        let count = 0;
+
+        for (let item of thisList.items) {
+            if (!item.checked) {
+                count++;
+            }
+        }
+
+        document.getElementById("span-items-remaining").innerHTML = count;
 
         saveLists(false);
     }
@@ -382,7 +430,9 @@ function editList(uuid) {
     let tbody = document.getElementById("table-list-items-body");
     tbody.innerHTML = "";
 
-    for (let item of list.items) {
+    const items = list.items;//.reverse();
+
+    for (let item of items) {
         _item.value = item.item;
         addListItem(false, item);
     }
@@ -524,13 +574,28 @@ function displayMenu(menu) {
     tbody.appendChild(getRow("Sun"));
 }
 
-function displayList(list) {
+function displayList(list, orderAlpha) {
     let tbody = document.getElementById("table-list-items-view");
     tbody.innerHTML = "";
 
     let count = 0;
+    let items;
 
-    for (let item of list.items) {
+    if (orderAlpha) {
+        /*items = list.items.sort(function(a, b) {
+            if (a.item < b.item) {
+                return -1;
+            }
+            if (a.item > b.item) {
+                return 1;
+            }
+            return 0;
+        });*/
+    } else {
+        items = list.items;
+    }
+
+    for (let item of items) {
         const uuid = item.uuid;
 
         let tr = document.createElement("tr");
@@ -558,6 +623,8 @@ function displayList(list) {
 
         count++;
     }
+
+    document.getElementById("span-total-items").innerHTML = count;
 }
 
 function addAndDisplayList(list) {
