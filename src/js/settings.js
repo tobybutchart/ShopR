@@ -1,10 +1,11 @@
 /* templates start */
 class Settings {
-    constructor(allowModalBGClick, hideOnTick, checkNavAway, confirmOnDelete) {
+    constructor(allowModalBGClick, hideOnTick, checkNavAway, confirmOnDelete, language) {
         this.allowModalBGClick = allowModalBGClick;
         this.hideOnTick = hideOnTick;
         this.checkNavAway = checkNavAway;
         this.confirmOnDelete = confirmOnDelete;
+        this.language = language;
     }
 }
 /* templates end */
@@ -13,7 +14,7 @@ const settingsStr = "settings";
 let settings = getSettings();
 
 function getSettings() {
-    let ret = new Settings(false, false, true, true);
+    let ret = new Settings(false, false, true, true, 'en-GB');
 
     if (localStorage.getItem(settingsStr) != null) {
         ret = JSON.parse(localStorage.getItem(settingsStr));
