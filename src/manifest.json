@@ -33,7 +33,7 @@
     "speech-recognition" : {
       "description" : "Speech recognition"
     }
-  }
+},
   "short_name": "ShopR",
   "start_url": "./",
   "scope": ".",
